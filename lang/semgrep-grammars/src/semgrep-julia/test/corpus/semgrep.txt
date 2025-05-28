@@ -3,11 +3,16 @@ Ellipsis
 ================================================================================
 
 ...
+(x...)
+
 
 --------------------------------------------------------------------------------
 
 (source_file
-  (semgrep_ellipsis))
+  (semgrep_ellipsis)
+  (parenthesized_expression
+     (splat_expression
+       (identifier))))
 
 ================================================================================
 Top level statements
@@ -58,8 +63,9 @@ abstract type $TY end
 
 (source_file
   (abstract_definition
-    (interpolation_expression
-      (identifier))))
+    (type_head
+      (interpolation_expression
+        (identifier)))))
 
 ================================================================================
 Struct metavariable
@@ -74,8 +80,9 @@ end
 
 (source_file
   (struct_definition
-    (interpolation_expression
-      (identifier))
+    (type_head
+      (interpolation_expression
+        (identifier)))
     (identifier)
     (identifier)))
 
@@ -109,6 +116,23 @@ end
     (parenthesized_expression
       (semgrep_ellipsis))
     (semgrep_ellipsis)))
+
+
+================================================================================
+Ellipsis in quotes
+================================================================================
+
+:(...)
+:...
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (quote_expression
+    (parenthesized_expression
+      (semgrep_ellipsis)))
+  (quote_expression
+    (operator)))
 
 ================================================================================
 Metavariable
@@ -190,21 +214,21 @@ using $MODULE: $X as $Y
 --------------------------------------------------------------------------------
 
 (source_file
-  (import_statement
+  (using_statement
     (selected_import
       (interpolation_expression
         (identifier))
       (interpolation_expression
         (identifier))))
-  (import_statement
+  (using_statement
     (selected_import
       (interpolation_expression
         (identifier))
       (import_alias
         (interpolation_expression
           (identifier))
-        (identifier
-          (semgrep_extended_metavariable))))))
+        (interpolation_expression
+          (identifier))))))
 
 ================================================================================
 Metavariable in do block
@@ -222,9 +246,8 @@ end
     (argument_list
       (vector_expression))
     (do_clause
-      (argument_list
-        (identifier
-          (semgrep_extended_metavariable)))
+      (interpolation_expression
+        (identifier))
       (return_statement
         (identifier)))))
 
